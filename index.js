@@ -2,15 +2,15 @@ const Discord = require('discord.js')
 const client = new Discord.Client()
 client.commands = new Discord.Collection()
 const fs = require('fs')
-let profile = require('https://github.com/Arekusey/herokebot/blob/master/profile.json')
+let profile = require('./profile.json')
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
-fs.readdir('https://github.com/Arekusey/herokebot/tree/master/cmds/', (err, files) => {
+fs.readdir('./cmds/', (err, files) => {
 	if (err) console.log(err)
 	let jsfiles = files.filter(f => f.split(".").pop() === "js")
 	if (jsfiles.length <= 0) console.log("Нет команд для загрузки!!")
 	jsfiles.forEach((f, i) => {
-		let props = require(`https://github.com/Arekusey/herokebot/tree/master/cmds/${f}`)
+		let props = require(`./cmds/${f}`)
 		console.log(`${i + 1}. ${f} Загружен!`)
 		client.commands.set(props.help.name, props)
 	})
@@ -25,7 +25,6 @@ client.on("ready", () => {
 
 client.on("message", (message) => {
 	if (message.author.bot) return
-	if (message.channel.type == "dm") return
 	let uid = message.author.id
 	let u = profile[uid]
 	if (!u) {
@@ -46,7 +45,7 @@ client.on("message", (message) => {
 		u.xp = 0
 		u.level += 1
 	};
-	fs.writeFile('https://github.com/Arekusey/herokebot/blob/master/profile.json', JSON.stringify(profile), (err) => {
+	fs.writeFile('./profile.json', JSON.stringify(profile), (err) => {
 		if (err) console.log(err)
 	})
 	let messageArray = message.content.split(" ")
@@ -55,16 +54,6 @@ client.on("message", (message) => {
 	if (!message.content.startsWith(process.env.PREFIX)) return
 	let cmd = client.commands.get(command.slice(process.env.PREFIX.length))
 	if (cmd) cmd.run(client, message, args)
-})
-
-client.on("guildMemberAdd", (member) => {
-	client.channels.get("568493650175066123").setName(`Всего пользователей: ${client.guilds.get("556392341045248000").memberCount}`)
-	client.channels.get("570287675198930966").send(`К нам присоеденился ${member}`)
-})
-
-client.on("guildMemberRemove", (member) => {
-	client.channels.get("568493650175066123").setName(`Всего пользователей: ${client.guilds.get("556392341045248000").memberCount}`)
-	client.channels.get("570287675198930966").send(`Нас покинул ${member}`)
 })
 
 Client.login(process.env.BOT_TOKEN);
