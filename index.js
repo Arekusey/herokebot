@@ -2,15 +2,15 @@ const Discord = require('discord.js')
 const client = new Discord.Client()
 client.commands = new Discord.Collection()
 const fs = require('fs')
-let profile = require('./profile.json')
+let profile = require('https://github.com/Arekusey/herokebot/blob/master/profile.json')
 if (process.env.NODE_ENV !== 'production') require('dotenv').config();
 
-fs.readdir('./cmds/', (err, files) => {
+fs.readdir('https://github.com/Arekusey/herokebot/tree/master/cmds/', (err, files) => {
 	if (err) console.log(err)
 	let jsfiles = files.filter(f => f.split(".").pop() === "js")
 	if (jsfiles.length <= 0) console.log("Нет команд для загрузки!!")
 	jsfiles.forEach((f, i) => {
-		let props = require(`./cmds/${f}`)
+		let props = require(`https://github.com/Arekusey/herokebot/tree/master/cmds/${f}`)
 		console.log(`${i + 1}. ${f} Загружен!`)
 		client.commands.set(props.help.name, props)
 	})
@@ -46,7 +46,7 @@ client.on("message", (message) => {
 		u.xp = 0
 		u.level += 1
 	};
-	fs.writeFile('./profile.json', JSON.stringify(profile), (err) => {
+	fs.writeFile('https://github.com/Arekusey/herokebot/blob/master/profile.json', JSON.stringify(profile), (err) => {
 		if (err) console.log(err)
 	})
 	let messageArray = message.content.split(" ")
